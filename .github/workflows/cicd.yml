@@ -25,5 +25,5 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag my-image-test
     - name: Test my app
-      run: docker run my-image-test python -m unittest test_app.py
+      run: docker run my-image-test python -m unittest test_app
 
