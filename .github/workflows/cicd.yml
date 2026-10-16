@@ -25,5 +25,11 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag my-image-test
     - name: Test my app
-      run: docker run my-image-test python -m unittest test_app
+      run: |
+        echo "===== 查看镜像内文件 ====="
+        docker run --rm my-image-test ls -la /app
+        echo "===== 查看当前目录 ====="
+        docker run --rm my-image-test pwd
+        echo "===== 尝试运行测试 ====="
+        docker run --rm my-image-test python -m unittest test_app
 
