@@ -31,5 +31,5 @@ jobs:
         echo "===== 查看当前目录 ====="
         docker run --rm my-image-test pwd
         echo "===== 尝试运行测试 ====="
-        docker run --rm my-image-test python -m unittest test_app
+         docker run --rm my-image-test python -m pytest test_app.py
 
