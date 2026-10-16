@@ -1,9 +1,10 @@
 import sqlite3
 import bcrypt
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session
 
 app = Flask(__name__)
+app.secret_key = 'your-secret-key-here'
 
 DATABASE = 'users.db'
 
@@ -38,6 +39,8 @@ def login():
     conn.close()
     
     if user and bcrypt.checkpw(password.encode('utf-8'), user['password'].encode('utf-8')):
+        session['user_id'] = user['id']
+        session['username'] = user['username']
         return jsonify({"message": "Login successful", "username": user['username']}), 200
     
     return jsonify({"error": "Invalid username or password"}), 401
@@ -63,6 +66,11 @@ def register():
     except sqlite3.IntegrityError:
         conn.close()
         return jsonify({"error": "Username already exists"}), 409
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.clear()
+    return jsonify({"message": "Logged out successfully"}), 200
 
 if __name__ == '__main__':
     init_db()
