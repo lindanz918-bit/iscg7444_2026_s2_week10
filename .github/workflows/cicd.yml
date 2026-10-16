@@ -1,0 +1,35 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag my-image-test
+    - name: Test my app
+      run: |
+        echo "===== 查看镜像内文件 ====="
+        docker run --rm my-image-test ls -la /app
+        echo "===== 查看当前目录 ====="
+        docker run --rm my-image-test pwd
+        echo "===== 尝试运行测试 ====="
+         docker run --rm my-image-test python -m pytest test_app.py
+
