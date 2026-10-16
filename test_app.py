@@ -93,3 +93,21 @@ def test_database_creation(client, cleanup):
         table_exists = cursor.fetchone()
         conn.close()
         assert table_exists is not None
+
+def test_logout_success(client, cleanup):
+    client.post('/register', 
+               json={'username': 'testuser', 'password': 'testpass'},
+               content_type='application/json')
+    client.post('/login', 
+               json={'username': 'testuser', 'password': 'testpass'},
+               content_type='application/json')
+    response = client.post('/logout', content_type='application/json')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data['message'] == 'Logged out successfully'
+
+def test_logout_without_login(client, cleanup):
+    response = client.post('/logout', content_type='application/json')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data['message'] == 'Logged out successfully'
